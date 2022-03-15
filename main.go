@@ -25,6 +25,10 @@ var (
 	PushLocalImages = false
 	TargetRepo      = "linkinghack"
 	ReplaceSlash    = false
+	RepoUserName    = ""
+	RepoPassword    = ""
+	Email           = ""
+	ServerAddress   = ""
 )
 
 func init() {
@@ -41,17 +45,21 @@ func init() {
 	flag.BoolVar(&PushLocalImages, "push-local-images", false, "Whether tag and push local ko.local image to specified repo. If specified, build process will be skipped.")
 	flag.BoolVar(&ReplaceSlash, "replace-dash", false, "Whether replace slashes (/) with dash (-) in the image names")
 	flag.StringVar(&TargetRepo, "target-repo", "linkinghack", "To which repo push the local ko.local images")
+	flag.StringVar(&RepoUserName, "repo-user-name", "", "Username of the target repo")
+	flag.StringVar(&RepoPassword, "repo-password", "", "Password of the target repo and username")
+	flag.StringVar(&Email, "email", "", "Email of the repo user")
+	flag.StringVar(&ServerAddress, "server-address", "docker.io", "Server address of the repo without protocol")
 }
 
 // ko build ./cmd/controller --platform all --tag-only -B -P --tags 1.2 -L
 
 func main() {
+	flag.Parse()
 	if PushLocalImages {
 		TagAndPushLocalImages()
 		return
 	}
 
-	flag.Parse()
 	fmt.Println(ProjectRootDir)
 	KoBuildImages(filepath.Join(ProjectRootDir, "cmd"))
 }
